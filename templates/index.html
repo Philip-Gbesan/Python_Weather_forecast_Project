@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Prediction</title>
+    <script>
+        function loadSample(type) {
+            let drySample = {
+                MinTemp: 10, MaxTemp: 20, Rainfall: 0,
+                WindSpeed9am: 5, WindSpeed3pm: 10,
+                Humidity9am: 30, Humidity3pm: 25,
+                Pressure9am: 1015, Pressure3pm: 1013,
+                Temp9am: 15, Temp3pm: 18
+            };
+
+            let rainySample = {
+                MinTemp: 18, MaxTemp: 26, Rainfall: 15,
+                WindSpeed9am: 12, WindSpeed3pm: 20,
+                Humidity9am: 85, Humidity3pm: 90,
+                Pressure9am: 1005, Pressure3pm: 1002,
+                Temp9am: 20, Temp3pm: 24
+            };
+
+            let sample = (type === "dry") ? drySample : rainySample;
+
+            for (let key in sample) {
+                document.querySelector(`[name="${key}"]`).value = sample[key];
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>🌦 Rain Prediction App</h1>
+
+    <form method="POST" action="/">
+        <label>Min Temp:</label><input type="number" step="0.1" name="MinTemp" required><br>
+        <label>Max Temp:</label><input type="number" step="0.1" name="MaxTemp" required><br>
+        <label>Rainfall:</label><input type="number" step="0.1" name="Rainfall" required><br>
+        <label>Wind Speed 9am:</label><input type="number" step="0.1" name="WindSpeed9am" required><br>
+        <label>Wind Speed 3pm:</label><input type="number" step="0.1" name="WindSpeed3pm" required><br>
+        <label>Humidity 9am:</label><input type="number" step="0.1" name="Humidity9am" required><br>
+        <label>Humidity 3pm:</label><input type="number" step="0.1" name="Humidity3pm" required><br>
+        <label>Pressure 9am:</label><input type="number" step="0.1" name="Pressure9am" required><br>
+        <label>Pressure 3pm:</label><input type="number" step="0.1" name="Pressure3pm" required><br>
+        <label>Temp 9am:</label><input type="number" step="0.1" name="Temp9am" required><br>
+        <label>Temp 3pm:</label><input type="number" step="0.1" name="Temp3pm" required><br>
+
+        <button type="submit">Predict</button>
+        <button type="button" onclick="loadSample('dry')">🌞 Load Dry Weather Sample</button>
+        <button type="button" onclick="loadSample('rainy')">🌧 Load Rainy Weather Sample</button>
+    </form>
+
+    {% if prediction %}
+        <h2>✅ Predictions</h2>
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>Model</th>
+                <th>Prediction</th>
+                <th>Accuracy (%)</th>
+            </tr>
+            {% for model, pred in prediction.items() %}
+            <tr>
+                <td>{{ model }}</td>
+                <td>{{ pred }}</td>
+                <td>{{ accuracies[model] if model in accuracies else "N/A" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3>📊 Best Model: {{ best_model }}</h3>
+        <h3>🌤 Forecast (Majority Vote): {{ forecast }}</h3>
+    {% endif %}
+</body>
+</html>
